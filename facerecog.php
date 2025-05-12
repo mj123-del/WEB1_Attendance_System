@@ -83,8 +83,37 @@ header("Pragma: no-cache");
             <button type="submit" class="btn btn-black ms-2">Logout</button>
           </form>
         </div>
-
+        
       </div>
+      <div>
+            <video id="webcam" width="640" height="480" autoplay></video>
+  <canvas id="canvas" style="display: none;"></canvas>
+
+        </div>
+
+      <script>
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    const startButton = document.getElementById('startRecognition');
+    
+    // Access user's webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      }).catch(err => {
+        console.error("Error accessing webcam", err);
+      });
+
+    // Capture an image from webcam and show it on canvas
+    startButton.addEventListener('click', () => {
+      const context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = canvas.toDataURL('image/png');
+      
+      // Send the image to the server for facial recognition (later step)
+      console.log(imageData);
+    });
+  </script>
 
       <!-- You can insert face recognition camera/script area here -->
 
