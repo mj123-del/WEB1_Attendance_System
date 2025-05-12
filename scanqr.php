@@ -150,9 +150,27 @@ header("Pragma: no-cache");
   const resultDiv = document.getElementById('result');
 
   function onScanSuccess(decodedText, decodedResult) {
-    resultDiv.innerText = `Scanned: ${decodedText}`;
-    html5QrcodeScanner.clear(); // Optional: stop after first scan
-  }
+  resultDiv.innerText = `Scanned: ${decodedText}`;
+
+  // Send scanned value to server for verification
+  fetch('verify_qr.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `encoded_datetime=${encodeURIComponent(decodedText)}`
+  })
+  .then(response => response.text())
+  .then(data => {
+    resultDiv.innerHTML = data; // Server will return HTML asking to Time In or Out
+  })
+  .catch(error => {
+    console.error('Error verifying QR:', error);
+  });
+
+  html5QrcodeScanner.clear(); // Optional: stop scanning after first valid code
+}
+
 
   // UPDATED: Increase qrbox size to match larger reader
   const html5QrcodeScanner = new Html5QrcodeScanner(

@@ -80,12 +80,11 @@
     <div class="qr-container">
       <h1>QR Code Updates Every Minute</h1>
       <p>Encoded Date & Time: <span id="dateTimeText"></span></p>
-        <canvas class="qr-code" id="qrcodeCanvas" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.514);"></canvas>
+      <canvas class="qr-code" id="qrcodeCanvas" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.514);"></canvas>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-
 
   <script>
     function getCurrentDateTimeMinute() {
@@ -105,7 +104,30 @@
       const canvas = document.getElementById('qrcodeCanvas');
       await QRCode.toCanvas(canvas, dateTime);
 
+      // Send data to PHP script
+      sendToDatabase(dateTime);
     }
+
+    // Function to send data to the server
+    async function sendToDatabase(dateTime) {
+  const formData = new FormData();
+  formData.append('encoded_datetime', dateTime);
+
+  try {
+    const response = await fetch('save_qr.php', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.text();
+    console.log('Server Response:', result); // <-- Should print the response
+  } catch (error) {
+    console.error('Fetch error:', error);
+  }
+}
+
+
+
 
     // Run initially
     generateAndDecodeQRCode();
