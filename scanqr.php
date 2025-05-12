@@ -22,6 +22,7 @@ header("Pragma: no-cache");
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
+  <script src="html5-qrcode.min.js"></script>
   <script>
     // Optional: prevent back button showing cached page
     window.addEventListener('pageshow', function (event) {
@@ -30,6 +31,28 @@ header("Pragma: no-cache");
         }
     });
     </script>
+    <style>
+    .qr-container {
+      text-align: center;
+      background-color: #ffffff; 
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      max-height: 400px;
+      width: 100%;
+      height: 100%;
+    }
+    #reader {
+      width: 300px;
+      margin: auto;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <div class="d-flex min-vh-100">
@@ -84,9 +107,32 @@ header("Pragma: no-cache");
 
       </div>
 
-      <!-- You can add your QR scanning UI or script here -->
+      <div>
+
+        <div id="reader"></div>
+  <div id="result">Scan a QR code to see the result here.</div>
+
+  
+
+      </div>
 
     </main>
   </div>
+  <script>
+    const resultDiv = document.getElementById('result');
+
+    function onScanSuccess(decodedText, decodedResult) {
+      resultDiv.innerText = `Scanned: ${decodedText}`;
+      // Optionally, stop scanning after first result:
+      html5QrcodeScanner.clear();
+    }
+
+    const html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader", 
+      { fps: 10, qrbox: 250 }, 
+      false
+    );
+    html5QrcodeScanner.render(onScanSuccess);
+  </script>
 </body>
 </html>
