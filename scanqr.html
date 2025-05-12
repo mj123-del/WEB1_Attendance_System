@@ -33,16 +33,23 @@ header("Pragma: no-cache");
     </script>
     <style>
   .qr-container {
-    text-align: center;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    max-height: 400px;
-    width: 100%;
-    height: 100%;
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  max-height: 400px;
+  width: 100%;
+  height: 100%;
+  margin: auto; /* Optional: center in parent */
+}
+
 
   /* UPDATED: Make reader bigger and responsive */
   #reader {
@@ -63,6 +70,16 @@ header("Pragma: no-cache");
     font-size: 18px;
     text-align: center;
   }
+
+  .scanner-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh; /* Adjust based on your layout */
+    
+  }
+
 </style>
 
 </head>
@@ -125,6 +142,7 @@ header("Pragma: no-cache");
         <div id="reader"></div>
         <div id="result">Scan a QR code to see the result here.</div>
       </div>
+
 
     </main>
   </div>
