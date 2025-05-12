@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+// ✅ Check login
+if (!isset($_SESSION['userName'])) {
+    header("Location: index.php");
+    exit();
+}
+
+// 🚫 Prevent caching
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +20,14 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
+  <script>
+    // Optional: prevent back button showing cached page
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+            window.location.reload();
+        }
+    });
+    </script>
 </head>
 <body>
   <div class="d-flex min-vh-100">
@@ -57,7 +78,9 @@
         <div class="d-flex align-items-center">
           <!-- INSERT PROFILE ICON HERE -->
           <img src="img/profile2.png" alt="Profile">
-          <button class="btn btn-black ms-2">Logout</button>
+          <form method="post" action="logout.php" style="display:inline;">
+            <button type="submit" class="btn btn-black ms-2">Logout</button>
+          </form>
         </div>
       </div>
 

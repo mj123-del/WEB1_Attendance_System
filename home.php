@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+// ❌ If user is not logged in, redirect to login
+if (!isset($_SESSION['userName'])) {
+    header("Location: index.php");
+    exit();
+}
+
+// ✅ Prevent browser caching of this page
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +22,15 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
-  
+  <script>
+window.addEventListener('pageshow', function (event) {
+    if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+        // If coming back with browser back button, reload
+        window.location.reload();
+    }
+});
+</script>
+
   
 </head>
 <body>
@@ -24,27 +47,27 @@
         <img src="img/logo.png" alt="Logo" class="logo mb-3">
       </div>
       <nav class="nav flex-column gap-3">
-        <a href="home.html" class="nav-link d-flex align-items-center">
+        <a href="home.php" class="nav-link d-flex align-items-center">
           <!-- INSERT HOME ICON HERE -->
            <img src="img/home.png" alt="Home">
           <span class="ms-2">Home</span>
         </a>
-        <a href="faq.html" class="nav-link d-flex align-items-center">
+        <a href="faq.php" class="nav-link d-flex align-items-center">
           <!-- INSERT FAQ ICON HERE -->
            <img src="img/faq.png" alt="FAQ">
           <span class="ms-2">FAQ</span>
         </a>
-        <a href="contact.html" class="nav-link d-flex align-items-center">
+        <a href="contact.php" class="nav-link d-flex align-items-center">
           <!-- INSERT CONTACT ICON HERE -->
           <img src="img/contact.png" alt="Contact">
           <span class="ms-2">Contact Us</span>
         </a>
-        <a href="about.html" class="nav-link d-flex align-items-center">
+        <a href="about.php" class="nav-link d-flex align-items-center">
           <!-- INSERT ABOUT ICON HERE -->
           <img src="img/about.png" alt="About">
           <span class="ms-2">About Us</span>
         </a>
-        <a href="resetpass.html" class="nav-link d-flex align-items-center">
+        <a href="resetpass.php" class="nav-link d-flex align-items-center">
           <!-- INSERT RESET ICON HERE -->
           <img src="img/reset.png" alt="Reset Password">
           <span class="ms-2">Reset Password</span>
@@ -59,7 +82,9 @@
         <div class="d-flex align-items-center">
           <!-- INSERT PROFILE ICON HERE -->
           <img src="img/profile2.png" alt="Profile">
-          <button class="btn btn-black ms-2">Logout</button>
+          <form method="post" action="logout.php" style="display:inline;">
+            <button type="submit" class="btn btn-black ms-2">Logout</button>
+          </form>
         </div>
       </div>
 
@@ -69,7 +94,7 @@
     
     <!-- Face Recognition -->
     <div class="col-md-6 col-lg-5">
-      <a href="facerecog.html" class="text-decoration-none">
+      <a href="facerecog.php" class="text-decoration-none">
         <div class="function-box text-center p-4">
           <img src="img/facerecog.png" alt="Use Face Recognition">
           <p class="mt-3">Use Face Recognition</p>
@@ -79,7 +104,7 @@
 
     <!-- Scan QR Code -->
     <div class="col-md-6 col-lg-5">
-      <a href="scanqr.html" class="text-decoration-none">
+      <a href="scanqr.php" class="text-decoration-none">
         <div class="function-box text-center p-4">
           <img src="img/qr.png" alt="Scan QR Code">
           <p class="mt-3">Scan QR Code Button</p>
@@ -89,7 +114,7 @@
 
     <!-- View Attendance Logs -->
     <div class="col-md-6 col-lg-5">
-      <a href="viewattendance.html" class="text-decoration-none">
+      <a href="viewattendance.php" class="text-decoration-none">
         <div class="function-box text-center p-4">
           <img src="img/viewlogs.png" alt="View Attendance Logs">
           <p class="mt-3">View Attendance Logs</p>
@@ -99,7 +124,7 @@
 
     <!-- Profile -->
     <div class="col-md-6 col-lg-5">
-      <a href="profile.html" class="text-decoration-none">
+      <a href="profile.php" class="text-decoration-none">
         <div class="function-box text-center p-4">
           <img src="img/profile.png" alt="User Profile">
           <p class="mt-3">Profile</p>

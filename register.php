@@ -1,52 +1,76 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";
+
 include 'connect.php';
 
-if (isset($_POST['Register'])) {
+// ✅ Handle Registration
+if (isset($_POST['register'])) {
     $nameUser = $_POST['nameUsr'];
     $roleUser = $_POST['roleUsr'];
     $deptmtUser = $_POST['deptUsr'];
     $passWrd = $_POST['passWrd'];
     $conPassWrd = $_POST['conPass'];
 
-    // Confirm passwords match
+    // Check if passwords match
     if ($passWrd !== $conPassWrd) {
         echo "❌ Passwords do not match!";
     } else {
-        // Check if user already exists
-        $checkName = "SELECT * FROM users WHERE name='$nameUser'";
-        $result = $conn->query($checkName);
+        // Check if user already exists using prepared statement
+        $checkStmt = $conn->prepare("SELECT * FROM users WHERE name = ?");
+        $checkStmt->bind_param("s", $nameUser);
+        $checkStmt->execute();
+        $result = $checkStmt->get_result();
 
         if ($result->num_rows > 0) {
             echo "❌ Username is already taken!";
         } else {
-            // Hash password and insert
-            $hashedPassword = md5($passWrd);
-            $insertQuery = "INSERT INTO users(name, role, department, password) VALUES ('$nameUser', '$roleUser', '$deptmtUser', '$hashedPassword')";
-            if ($conn->query($insertQuery) === TRUE) {
-            header("index.php"); 
-            exit();
-            }else {
-            echo "❌ Error: " . $conn->error;
-                }
+            // ✅ Securely hash password
+            $hashedPassword = password_hash($passWrd, PASSWORD_DEFAULT);
+
+            // Insert user
+            $insertStmt = $conn->prepare("INSERT INTO users (name, role, department, password) VALUES (?, ?, ?, ?)");
+            $insertStmt->bind_param("ssss", $nameUser, $roleUser, $deptmtUser, $hashedPassword);
+
+            if ($insertStmt->execute()) {
+                header("Location: index.php");
+                exit();
+            } else {
+                echo "❌ Error inserting user: " . $insertStmt->error;
+            }
         }
     }
 }
 
+// ✅ Handle Login (in case form is reused)
 if (isset($_POST['signIn'])) {
     $email = $_POST['userName'];
-    $password = md5($_POST['password']);
+    $password = $_POST['password'];
 
-    $sql = "SELECT * FROM users WHERE name='$email' AND password='$password'";
-    $result = $conn->query($sql);
+    // Fetch user by name
+    $loginStmt = $conn->prepare("SELECT * FROM users WHERE name = ?");
+    $loginStmt->bind_param("s", $email);
+    $loginStmt->execute();
+    $result = $loginStmt->get_result();
 
     if ($result->num_rows > 0) {
-        session_start();
         $row = $result->fetch_assoc();
-        $_SESSION['userName'] = $row['name'];
-        header("Location: homepage.php");
-        exit();
+
+        // ✅ Verify hashed password
+        if (password_verify($password, $row['password'])) {
+            session_start();
+            $_SESSION['userName'] = $row['name'];
+            header("Location: home.php");
+            exit();
+        } else {
+            echo "❌ Incorrect password!";
+        }
     } else {
-        echo "❌ Incorrect username or password!";
+        echo "❌ Username not found!";
     }
 }
 ?>
