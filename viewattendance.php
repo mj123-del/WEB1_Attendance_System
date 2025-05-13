@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+// ✅ Check login
+if (!isset($_SESSION['userName'])) {
+    header("Location: index.php");
+    exit();
+}
+
+// 🚫 Prevent caching
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +21,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
   <script>
+<<<<<<< HEAD:viewattendance.html
     function searchTable() {
       const input = document.getElementById("searchInput");
       const filter = input.value.toLowerCase();
@@ -30,6 +44,15 @@
       }
     }
   </script>
+=======
+    // Optional: prevent back button showing cached page
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+            window.location.reload();
+        }
+    });
+    </script>
+>>>>>>> f6e7792207da36e63fac13520266f67ba8ee1e23:viewattendance.php
 </head>
 <body>
   <div class="d-flex min-vh-100">
@@ -72,8 +95,16 @@
           <h2 class="fw-bold mt-3">Attendance Logs</h2> 
         </div>          
         <div class="d-flex align-items-center">
+<<<<<<< HEAD:viewattendance.html
           <img src="img/profile2.png" alt="Profile" style="width: 60px; height: 60px;">
           <button class="btn btn-black ms-2">Logout</button>
+=======
+          <!-- INSERT PROFILE ICON HERE -->
+          <img src="img/profile2.png" alt="Profile">
+          <form method="post" action="logout.php" style="display:inline;">
+            <button type="submit" class="btn btn-black ms-2">Logout</button>
+          </form>
+>>>>>>> f6e7792207da36e63fac13520266f67ba8ee1e23:viewattendance.php
         </div>
       </div>
 

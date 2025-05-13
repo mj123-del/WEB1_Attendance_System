@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dynamic QR Code</title>
+
+  <!-- Bootstrap & Google Fonts -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #d9d9d9; /* Same light gray background */
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #A8A8A8;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header img {
+      width: 200px; 
+      height: auto;
+    }
+
+    .main-content {
+      flex: 1; 
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .qr-container {
+      text-align: center;
+      background-color: #ffffff; 
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      max-height: 400px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .qr-container h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .qr-container p {
+      font-size: 14px;
+      margin-top: 10px;
+      color: #6c757d; /* subtle gray for the update text */
+    }
+
+    .qr-code {
+      margin: 10px 0;
+      max-width: 400px;
+      
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <div class="header">
+    <img src="img/logo.png" alt="Logo">
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="qr-container">
+      <h1>QR Code Updates Every Minute</h1>
+      <p>Encoded Date & Time: <span id="dateTimeText"></span></p>
+      <canvas class="qr-code" id="qrcodeCanvas" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.514);"></canvas>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+
+  <script>
+    function getCurrentDateTimeMinute() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+
+    async function generateAndDecodeQRCode() {
+      const dateTime = getCurrentDateTimeMinute();
+      document.getElementById("dateTimeText").textContent = dateTime;
+
+      const canvas = document.getElementById('qrcodeCanvas');
+      await QRCode.toCanvas(canvas, dateTime);
+
+      // Send data to PHP script
+      sendToDatabase(dateTime);
+    }
+
+    // Function to send data to the server
+    async function sendToDatabase(dateTime) {
+  const formData = new FormData();
+  formData.append('encoded_datetime', dateTime);
+
+  try {
+    const response = await fetch('save_qr.php', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.text();
+    console.log('Server Response:', result); // <-- Should print the response
+  } catch (error) {
+    console.error('Fetch error:', error);
+  }
+}
+
+
+
+
+    // Run initially
+    generateAndDecodeQRCode();
+
+    // Update every minute (60000 ms)
+    setInterval(generateAndDecodeQRCode, 60000);
+  </script>
+</body>
+</html>

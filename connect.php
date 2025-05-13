@@ -1,13 +1,11 @@
 <?php
-    $emailUser = $_POST['email/Username'];
-    $passWrd = $_POST['password'];
 
-    //Database Connectivity 
-    $conn = new mysqli('localhost','root','','attendee');
-    if(conn->connect_error){
-        echo "Failed to connect database".$conn->connect_error;
-    }else{
-        $stmt = $conn->prepare()
-    }
-
+$host="localhost";
+$user="root";
+$pass="";
+$db="attendee";
+$conn=new mysqli($host,$user,$pass,$db);
+if($conn->connect_error){
+    echo "Failed to connect DB".$conn->connect_error;
+}
 ?>
