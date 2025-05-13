@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: May 12, 2025 at 05:26 PM
+-- Host: 127.0.0.1
+-- Generation Time: May 11, 2025 at 12:32 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -50,7 +50,12 @@ INSERT INTO `administrator` (`admin_id`, `username`, `password`, `role`, `create
 
 CREATE TABLE `attendance_records` (
   `attendance_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL
+  `user_id` int(11) NOT NULL,
+  `days_present` int(11) DEFAULT 0,
+  `late_days` int(11) DEFAULT 0,
+  `absences` int(11) DEFAULT 0,
+  `total_working_days` int(11) DEFAULT 0,
+  `attendance_percentage` decimal(5,2) DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -106,17 +111,8 @@ CREATE TABLE `users` (
   `role` varchar(100) NOT NULL,
   `department` varchar(100) NOT NULL,
   `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `password` varchar(255) NOT NULL
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`user_id`, `name`, `role`, `department`, `status`, `created_at`, `password`) VALUES
-(2, 'Zherwin', 'Head Chief', 'Tech', 'Active', '2025-05-11 11:40:40', '1234'),
-(3, 'zherwinTest1', 'dev', 'tech', 'Active', '2025-05-12 03:54:44', '$2y$10$AfYJuBLfcqPaplX25Ytyne74Ia4vfvY7u/xtkMJN2CX8GWJfVf4M.');
 
 --
 -- Indexes for dumped tables
@@ -201,7 +197,7 @@ ALTER TABLE `reports`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables

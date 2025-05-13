@@ -63,7 +63,9 @@ if (isset($_POST['signIn'])) {
         // ✅ Verify hashed password
         if (password_verify($password, $row['password'])) {
             session_start();
+            $_SESSION['userId'] = $row['user_id'];
             $_SESSION['userName'] = $row['name'];
+
             header("Location: home.php");
             exit();
         } else {

@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Database connection
+// DB setup
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -23,8 +23,6 @@ if (isset($_POST['encoded_datetime'])) {
 
   if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-
-    // Format created_at to dd-mm-yyyy hh:mm AM/PM
     $created_at_raw = $row['created_at'];
     $formatted_created_at = date("d-m-Y h:i A", strtotime($created_at_raw));
 
@@ -34,6 +32,7 @@ if (isset($_POST['encoded_datetime'])) {
 
     echo "<p>Would you like to:</p>";
 
+    // ✅ Add method=post even if JS handles it (for clarity)
     echo "<form id='attendanceForm' class='mt-3 w-100'>";
     echo "<input type='hidden' name='datetime' value='" . htmlspecialchars($datetime) . "'>";
 

@@ -148,9 +148,35 @@
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- Add dynamic content here -->
-          </tbody>
+            <tbody>
+              <?php
+              include 'connect.php';
+
+              $sql = "SELECT user_id, nameFull, role, department, status FROM users";
+              $result = $conn->query($sql);
+
+              if ($result && $result->num_rows > 0):
+                while ($row = $result->fetch_assoc()):
+              ?>
+                <tr>
+                  <td><?= htmlspecialchars($row['user_id']) ?></td>
+                  <td><?= htmlspecialchars($row['nameFull']) ?></td>
+                  <td><?= htmlspecialchars($row['role']) ?></td>
+                  <td><?= htmlspecialchars($row['department']) ?></td>
+                  <td><?= htmlspecialchars($row['status']) ?></td>
+                  <td>
+                    <a href="edit_user.php?id=<?= $row['user_id'] ?>" class="btn btn-action">Edit</a>
+                    <a href="delete_user.php?id=<?= $row['user_id'] ?>" class="btn btn-action" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                  </td>
+                </tr>
+              <?php
+                endwhile;
+              else:
+              ?>
+                <tr><td colspan="6">No users found.</td></tr>
+              <?php endif; ?>
+</tbody>
+
         </table>
       </div>
     </main>

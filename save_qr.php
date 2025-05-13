@@ -26,9 +26,9 @@ if (isset($_POST['encoded_datetime'])) {
         // Delete older records, keeping only the 3 most recent
         $delete_sql = "
             DELETE FROM qr_codes 
-            WHERE id NOT IN (
-                SELECT id FROM (
-                    SELECT id FROM qr_codes ORDER BY id DESC LIMIT 3
+            WHERE qrcode_id NOT IN (
+                SELECT qrcode_id FROM (
+                    SELECT qrcode_id FROM qr_codes ORDER BY qrcode_id DESC LIMIT 3
                 ) AS temp
             )
         ";

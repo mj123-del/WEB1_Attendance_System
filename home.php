@@ -1,11 +1,11 @@
 <?php
 session_start();
 
-// ❌ If user is not logged in, redirect to login
-if (!isset($_SESSION['userName'])) {
+if (!isset($_SESSION['userId']) || !isset($_SESSION['userName'])) {
     header("Location: index.php");
     exit();
 }
+
 
 // ✅ Prevent browser caching of this page
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");

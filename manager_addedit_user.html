@@ -106,10 +106,7 @@
       <!-- Add/Edit User Form -->
       <div class="form-container">
         <form action="save_user.php" method="POST">
-          <div class="form-group">
-            <label for="employee_id">Employee ID</label>
-            <input type="text" id="employee_id" name="employee_id" required>
-          </div>
+          
           <div class="form-group">
             <label for="full_name">Full Name</label>
             <input type="text" id="full_name" name="full_name" class="full-width" required>
@@ -133,6 +130,14 @@
           <div class="form-group">
             <label for="day_off">Day Off</label>
             <input type="text" id="day_off" name="day_off" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="pass" name="passwrd" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Confirm Password</label>
+            <input type="password" id="conPass" name="conPass" required>
           </div>
           <div class="text-center">
             <button type="submit" class="btn btn-save">Save</button>
