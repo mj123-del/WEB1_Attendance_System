@@ -8,22 +8,39 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Custom styles for square buttons */
+    /* Custom styles for cards and icons */
     .card {
-      border-radius: 15px; /* Add rounded corners */
-      height: 280px;
-      width: 510px;
+      border-radius: 15px;
+      height: 250px;
+      width: 100%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
+
     .card img {
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
     }
+
     .card-title {
-      margin-top: 15px;
-      font-size: 16px;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .card {
+        height: 200px;
+      }
+      .card img {
+        width: 60px;
+        height: 60px;
+      }
+      .card-title {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
@@ -32,27 +49,22 @@
     <!-- Sidebar -->
     <aside class="sidebar d-flex flex-column p-4">
       <div class="logo mb-5 text-center">
-        <!-- INSERT LOGO IMAGE HERE -->
         <img src="img/logo.png" alt="Logo" class="logo mb-3">
       </div>
       <nav class="nav flex-column gap-4">
         <a href="manager_homedashboard.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT HOME ICON HERE -->
           <img src="img/home.png" alt="Home" class="me-2">
           <span>Home</span>
         </a>
         <a href="manager_manageusers.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT MANAGE USERS ICON HERE -->
           <img src="img/manageusers.png" alt="Manage Users" class="me-2">
           <span>Manage Users</span>
         </a>
         <a href="manager_reports.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT REPORTS ICON HERE -->
           <img src="img/reports.png" alt="Reports" class="me-2">
           <span>Reports</span>
         </a>
         <a href="manager_passwordreset.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT RESET PASSWORD ICON HERE -->
           <img src="img/reset.png" alt="Reset Password" class="me-2">
           <span>Reset Password</span>
         </a>
@@ -65,57 +77,46 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Home</h2>
         <div class="d-flex align-items-center">
-          <!-- INSERT PROFILE ICON HERE -->
           <img src="img/profile2.png" alt="Profile" style="width: 60px; height: 60px;">
           <button class="btn btn-black ms-2">Logout</button>
         </div>
       </div>
 
       <!-- Buttons Section -->
-      <div class="row g-2">
-        <div class="col-sm-6 col-lg-6 mb-3">
-          <a href="manager_face_recognition.html" class="text-decoration-none">
-            <div class="card text-white bg-black text-center p-4">
-              <!-- INSERT FACE RECOGNITION ICON HERE -->
-              <img src="img/facerecog.png" alt="Use Face Recognition">
-              <div>
-                <h5 class="card-title">Use Face Recognition</h5>
+      <div class="container d-flex justify-content-center">
+        <div class="row g-3 justify-content-center">
+          <div class="col-md-5 col-lg-5 mb-3">
+            <a href="manager_face_recognition.html" class="text-decoration-none">
+              <div class="card text-white bg-black text-center p-4">
+                <img src="img/facerecog.png" alt="Use Face Recognition">
+                <div><h5 class="card-title">Use Face Recognition</h5></div>
               </div>
-            </div>
-          </a>
-        </div>
-        <div class="col-sm-6 col-lg-6 mb-3">
-          <a href="manager_scan_qr.html" class="text-decoration-none">
-            <div class="card text-white bg-black text-center p-4">
-              <!-- INSERT QR CODE ICON HERE -->
-              <img src="img/qr.png" alt="Scan QR Code">
-              <div>
-                <h5 class="card-title">Generated QR Code</h5>
+            </a>
+          </div>
+          <div class="col-md-5 col-lg-5 mb-3">
+            <a href="manager_scan_qr.html" class="text-decoration-none">
+              <div class="card text-white bg-black text-center p-4">
+                <img src="img/qr.png" alt="Scan QR Code">
+                <div><h5 class="card-title">Scan QR Code</h5></div>
               </div>
-            </div>
-          </a>
-        </div>
-        <div class="col-sm-6 col-lg-6 mb-3">
-          <a href="manager_attendancelogs.html" class="text-decoration-none">
-            <div class="card text-white bg-black text-center p-4">
-              <!-- INSERT VIEW ATTENDANCE LOGS ICON HERE -->
-              <img src="img/viewlogs.png" alt="View Attendance Logs">
-              <div>
-                <h5 class="card-title">View Attendance Logs</h5>
+            </a>
+          </div>
+          <div class="col-md-5 col-lg-5 mb-3">
+            <a href="manager_attendancelogs.html" class="text-decoration-none">
+              <div class="card text-white bg-black text-center p-4">
+                <img src="img/viewlogs.png" alt="View Attendance Logs">
+                <div><h5 class="card-title">View Attendance Logs</h5></div>
               </div>
-            </div>
-          </a>
-        </div>
-        <div class="col-sm-6 col-lg-6 mb-3">
-          <a href="manager_profile.html" class="text-decoration-none">
-            <div class="card text-white bg-black text-center p-4">
-              <!-- INSERT PROFILE ICON HERE -->
-              <img src="img/profile.png" alt="Profile">
-              <div>
-                <h5 class="card-title">Profile</h5>
+            </a>
+          </div>
+          <div class="col-md-5 col-lg-5 mb-3">
+            <a href="manager_profile.html" class="text-decoration-none">
+              <div class="card text-white bg-black text-center p-4">
+                <img src="img/profile.png" alt="Profile">
+                <div><h5 class="card-title">Profile</h5></div>
               </div>
-            </div>
-          </a>
+            </a>
+          </div>
         </div>
       </div>
     </main>
