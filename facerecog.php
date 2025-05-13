@@ -22,6 +22,13 @@ header("Pragma: no-cache");
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
+  
+  <style>
+    #webcam {
+      transform: scaleX(-1); /* Flip horizontally */
+    }
+  </style>
+
   <script>
     // Optional: prevent back button showing cached page
     window.addEventListener('pageshow', function (event) {
@@ -29,7 +36,7 @@ header("Pragma: no-cache");
             window.location.reload();
         }
     });
-    </script>
+  </script>
 </head>
 <body>
   <div class="d-flex min-vh-100">
@@ -85,38 +92,45 @@ header("Pragma: no-cache");
         </div>
         
       </div>
-      <div>
-            <video id="webcam" width="640" height="480" autoplay></video>
-  <canvas id="canvas" style="display: none;"></canvas>
 
-        </div>
+      <!-- Webcam Section -->
+      <div>
+        <video id="webcam" width="640" height="480" autoplay></video>
+        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+        <br/>
+        <button id="startRecognition" class="btn btn-primary mt-3">Start Recognition</button>
+      </div>
 
       <script>
-    const video = document.getElementById('webcam');
-    const canvas = document.getElementById('canvas');
-    const startButton = document.getElementById('startRecognition');
-    
-    // Access user's webcam
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        video.srcObject = stream;
-      }).catch(err => {
-        console.error("Error accessing webcam", err);
-      });
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('canvas');
+        const startButton = document.getElementById('startRecognition');
 
-    // Capture an image from webcam and show it on canvas
-    startButton.addEventListener('click', () => {
-      const context = canvas.getContext('2d');
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const imageData = canvas.toDataURL('image/png');
-      
-      // Send the image to the server for facial recognition (later step)
-      console.log(imageData);
-    });
-  </script>
+        // Access user's webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(stream => {
+            video.srcObject = stream;
+          }).catch(err => {
+            console.error("Error accessing webcam", err);
+          });
 
-      <!-- You can insert face recognition camera/script area here -->
+        // Capture an image from webcam and show it on canvas
+        startButton.addEventListener('click', () => {
+          const context = canvas.getContext('2d');
+          
+          // Flip context before drawing (undo mirror effect)
+          context.save();
+          context.translate(canvas.width, 0);
+          context.scale(-1, 1); // Horizontal flip
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          context.restore();
 
+          const imageData = canvas.toDataURL('image/png');
+          
+          // Example: log to console (replace with actual server upload logic)
+          console.log(imageData);
+        });
+      </script>
     </main>
   </div>
 </body>
