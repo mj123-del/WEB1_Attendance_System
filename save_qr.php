@@ -10,19 +10,33 @@ $dbname = "attendee";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
 // Check for incoming data
 if (isset($_POST['encoded_datetime'])) {
     $encoded_datetime = $_POST['encoded_datetime'];
 
-    $sql = "INSERT INTO qr_codes (encoded_datetime) VALUES (?)";
-    $stmt = $conn->prepare($sql);
+    // Insert the new data
+    $insert_sql = "INSERT INTO qr_codes (encoded_datetime) VALUES (?)";
+    $stmt = $conn->prepare($insert_sql);
     $stmt->bind_param("s", $encoded_datetime);
 
     if ($stmt->execute()) {
-        echo "Saved successfully";
+        // Delete older records, keeping only the 3 most recent
+        $delete_sql = "
+            DELETE FROM qr_codes 
+            WHERE id NOT IN (
+                SELECT id FROM (
+                    SELECT id FROM qr_codes ORDER BY id DESC LIMIT 3
+                ) AS temp
+            )
+        ";
+        if (!$conn->query($delete_sql)) {
+            echo "Insert succeeded, but delete failed: " . $conn->error;
+        } else {
+            echo "Saved successfully and old data trimmed.";
+        }
     } else {
         echo "Insert error: " . $stmt->error;
     }

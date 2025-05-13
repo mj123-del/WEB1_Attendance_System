@@ -37,23 +37,23 @@ header("Pragma: no-cache");
         <img src="img/logo.png" alt="Logo" class="logo mb-3">
       </div>
       <nav class="nav flex-column gap-3">
-        <a href="home.html" class="nav-link d-flex align-items-center">
+        <a href="home.php" class="nav-link d-flex align-items-center">
           <img src="img/home.png" alt="Home">
           <span class="ms-2">Home</span>
         </a>
-        <a href="faq.html" class="nav-link d-flex align-items-center">
+        <a href="faq.php" class="nav-link d-flex align-items-center">
           <img src="img/faq.png" alt="FAQ">
           <span class="ms-2">FAQ</span>
         </a>
-        <a href="contact.html" class="nav-link d-flex align-items-center">
+        <a href="contact.php" class="nav-link d-flex align-items-center">
           <img src="img/contact.png" alt="Contact">
           <span class="ms-2">Contact Us</span>
         </a>
-        <a href="about.html" class="nav-link d-flex align-items-center">
+        <a href="about.php" class="nav-link d-flex align-items-center">
           <img src="img/about.png" alt="About">
           <span class="ms-2">About Us</span>
         </a>
-        <a href="resetpass.html" class="nav-link d-flex align-items-center">
+        <a href="resetpass.php" class="nav-link d-flex align-items-center">
           <img src="img/reset.png" alt="Reset Password">
           <span class="ms-2">Reset Password</span>
         </a>
@@ -64,7 +64,7 @@ header("Pragma: no-cache");
     <main class="flex-fill p-4 d-flex flex-column align-items-center">
       <div class="d-flex justify-content-between align-items-center w-100 mb-4">
         <div>
-          <a href="home.html">
+          <a href="home.php">
             <img src="img/backbtn.png" alt="Back" style="width: 32px; height: 32px;">
           </a>
           <h2 class="fw-bold mt-3">Profile</h2>

@@ -79,61 +79,109 @@
   <div class="main-content">
     <div class="qr-container">
       <h1>QR Code Updates Every Minute</h1>
-      <p>Encoded Date & Time: <span id="dateTimeText"></span></p>
+      <p>Current Time: <span id="dateTimeText"></span></p>
       <canvas class="qr-code" id="qrcodeCanvas" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.514);"></canvas>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<script>
+  const canvas = document.getElementById('qrcodeCanvas');
+  const dateTimeText = document.getElementById('dateTimeText');
 
-  <script>
-    function getCurrentDateTimeMinute() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      return `${year}-${month}-${day} ${hours}:${minutes}`;
-    }
-
-    async function generateAndDecodeQRCode() {
-      const dateTime = getCurrentDateTimeMinute();
-      document.getElementById("dateTimeText").textContent = dateTime;
-
-      const canvas = document.getElementById('qrcodeCanvas');
-      await QRCode.toCanvas(canvas, dateTime);
-
-      // Send data to PHP script
-      sendToDatabase(dateTime);
-    }
-
-    // Function to send data to the server
-    async function sendToDatabase(dateTime) {
-  const formData = new FormData();
-  formData.append('encoded_datetime', dateTime);
-
-  try {
-    const response = await fetch('save_qr.php', {
-      method: 'POST',
-      body: formData
-    });
-
-    const result = await response.text();
-    console.log('Server Response:', result); // <-- Should print the response
-  } catch (error) {
-    console.error('Fetch error:', error);
+  // Format datetime as YYYY-MM-DD HH:MM
+  function formatDateTimeToMinute(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
+
+  // Format full datetime (with seconds) for live display
+  function formatFullDateTime(date) {
+    const formatted = formatDateTimeToMinute(date);
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${formatted}:${seconds}`;
+  }
+
+  // Sends the encoded time to your PHP backend
+  async function sendToDatabase(dateTime) {
+    const formData = new FormData();
+    formData.append('encoded_datetime', dateTime);
+
+    try {
+      const response = await fetch('save_qr.php', {
+        method: 'POST',
+        body: formData
+      });
+      const result = await response.text();
+      console.log('Server Response:', result);
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  }
+
+  async function encodeTimeWithSecret(timeStr, secret = "mySecretKey123") {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(secret);
+  const key = await crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+
+  const data = encoder.encode(timeStr);
+  const signature = await crypto.subtle.sign("HMAC", key, data);
+
+  // Convert ArrayBuffer to hex string
+  return Array.from(new Uint8Array(signature))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
 }
 
+  // Generates QR code for current minute
+  async function generateQRCodeNow() {
+  const now = new Date();
+  const encodedTime = formatDateTimeToMinute(now);
 
+  // Encrypt the time before generating QR
+  const secureHash = await encodeTimeWithSecret(encodedTime);
 
+  // Show original time to user
+  console.log("Encoded Time:", encodedTime);
+  console.log("QR Content (Encrypted):", secureHash);
 
-    // Run initially
-    generateAndDecodeQRCode();
+  // Generate QR from encrypted time
+  await QRCode.toCanvas(canvas, secureHash);
 
-    // Update every minute (60000 ms)
-    setInterval(generateAndDecodeQRCode, 60000);
-  </script>
+  // Optional: Save raw time or encrypted version in DB
+  sendToDatabase(secureHash); // or encodedTime if backend handles validation
+}
+
+  // Start clock and handle QR updates
+  function startLiveClockAndQR() {
+    let lastEncodedTime = '';
+
+    setInterval(() => {
+      const now = new Date();
+      const displayTime = formatFullDateTime(now);
+      dateTimeText.textContent = displayTime;
+
+      const currentEncoded = formatDateTimeToMinute(now);
+      if (currentEncoded !== lastEncodedTime) {
+        lastEncodedTime = currentEncoded;
+        generateQRCodeNow();
+      }
+    }, 1000); // Update every second
+  }
+
+  // Initialize on load
+  window.onload = startLiveClockAndQR;
+</script>
+
 </body>
 </html>
