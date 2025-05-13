@@ -22,16 +22,29 @@ if (isset($_POST['encoded_datetime'])) {
   $result = $stmt->get_result();
 
   if ($result->num_rows > 0) {
-    // Match found
-    echo "<div class='alert alert-success'>QR verified for: <strong>$datetime</strong></div>";
+    $row = $result->fetch_assoc();
+
+    // Format created_at to dd-mm-yyyy hh:mm AM/PM
+    $created_at_raw = $row['created_at'];
+    $formatted_created_at = date("d-m-Y h:i A", strtotime($created_at_raw));
+
+    echo "<div class='alert alert-success'>";
+    echo "QR verified. Code last updated at: <strong>" . htmlspecialchars($formatted_created_at) . "</strong>";
+    echo "</div>";
+
     echo "<p>Would you like to:</p>";
-    echo "<form method='post' action='record_attendance.php'>";
+
+    echo "<form id='attendanceForm' class='mt-3 w-100'>";
     echo "<input type='hidden' name='datetime' value='" . htmlspecialchars($datetime) . "'>";
-    echo "<button type='submit' name='action' value='in' class='btn btn-success me-2'>Time In</button>";
-    echo "<button type='submit' name='action' value='out' class='btn btn-danger'>Time Out</button>";
+
+    echo "<div class='d-flex flex-column flex-sm-row justify-content-center align-items-stretch gap-2'>";
+    echo "<button type='submit' name='action' value='in' class='btn btn-success w-100'>Time In</button>";
+    echo "<button type='submit' name='action' value='out' class='btn btn-danger w-100'>Time Out</button>";
+    echo "</div>";
+
     echo "</form>";
   } else {
-    echo "<div class='alert alert-danger'>Invalid QR Code or Expired</div>";
+    echo "<div class='alert alert-danger'>QR code not recognized.</div>";
   }
 
   $stmt->close();
