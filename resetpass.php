@@ -19,7 +19,7 @@ header("Pragma: no-cache");
   <title>Reset Password</title>
 
   <!-- Bootstrap & Google Fonts -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
   <script>
@@ -84,32 +84,29 @@ header("Pragma: no-cache");
       </div>
 
       <!-- Reset Password Form -->
-      <div class="reset-password-wrapper shadow-sm">
-        <form>
-          <div class="form-group mb-4">
-            <label for="newPassword">New Password*</label>
-            <input 
-              type="password" 
-              id="newPassword" 
-              class="form-control" 
-              placeholder="Enter new password"
-            >
-          </div>
-          <div class="form-group mb-4">
-            <label for="confirmPassword">Confirm Password*</label>
-            <input 
-              type="password" 
-              id="confirmPassword" 
-              class="form-control" 
-              placeholder="Confirm new password"
-            >
-          </div>
-          <div class="text-center">
-            <button type="submit" class="btn btn-black btn-save">Save</button>
-          </div>
-        </form>
+      <div class="form-wrapper">
+        <div class="form-container">
+          <form action="password_reset.php" method="POST">
+            <div class="mb-4">
+              <label for="current-password" class="form-label fw-bold">Current Password <span class="text-danger">*</span></label>
+              <input type="password" id="current-password" name="new_password" class="form-control" placeholder="Enter you current password" required>
+            </div>
+            <div class="mb-4">
+              <label for="new-password" class="form-label fw-bold">New Password <span class="text-danger">*</span></label>
+              <input type="password" id="new-password" name="new_password" class="form-control" placeholder="Enter your new password" required>
+            </div>
+            <div class="mb-4">
+              <label for="confirm-password" class="form-label fw-bold">Confirm Password <span class="text-danger">*</span></label>
+              <input type="password" id="confirm-password" name="confirm_password" class="form-control" placeholder="Confirm your new password" required>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-black btn-save">Save</button>
+            </div>
+          </form>
+        </div>
       </div>
     </main>
   </div>
+  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 </body>
 </html>

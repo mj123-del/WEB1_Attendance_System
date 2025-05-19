@@ -19,7 +19,7 @@ header("Pragma: no-cache");
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Home</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
   <script>
@@ -135,6 +135,7 @@ window.addEventListener('pageshow', function (event) {
   </div>
 </div>
 </body>
+<link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
 </html>
 
 <script>

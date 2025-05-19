@@ -33,5 +33,6 @@
       <?php endforeach; ?>
     </tbody>
   </table>
+  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 </body>
 </html>

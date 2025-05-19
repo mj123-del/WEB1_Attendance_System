@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'connect.php';  // Ensure this file contains the database connection
 
 // ✅ Check login
 if (!isset($_SESSION['userName'])) {
@@ -7,9 +8,34 @@ if (!isset($_SESSION['userName'])) {
     exit();
 }
 
+// Fetch the logged-in user's username from the session
+$userName = $_SESSION['userName'];
+
+// Query to get the user's profile data from the 'name' column (username)
+$sql = "SELECT user_id, nameFull, role, department, shift, day_off 
+        FROM users 
+        WHERE name = '$userName'";  // 'name' is used here to match the column in your table
+
+$result = $conn->query($sql);
+
 // 🚫 Prevent caching
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
+
+// Check if the query was successful
+if ($conn->error) {
+    echo "Error: " . $conn->error;  // Show any SQL errors
+}
+
+// Check if the result has any rows
+if ($result && $result->num_rows > 0) {
+    // Fetch the user's data
+    $user = $result->fetch_assoc();
+} else {
+    // Handle case where the user is not found
+    echo "No user found with the username '$userName'.";
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,17 +43,9 @@ header("Pragma: no-cache");
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Profile</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
-  <script>
-    // Optional: prevent back button showing cached page
-    window.addEventListener('pageshow', function (event) {
-        if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
-            window.location.reload();
-        }
-    });
-    </script>
 </head>
 <body>
   <div class="d-flex min-vh-100">
@@ -83,36 +101,37 @@ header("Pragma: no-cache");
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Employee ID</label>
-              <input type="text" class="form-control" value="EMP-0001" readonly>
+              <input type="text" class="form-control" value="<?php echo $user['user_id']; ?>" readonly>
             </div>
             <div class="col-md-6">
               <label class="form-label">Full Name</label>
-              <input type="text" class="form-control" value="Maria Johnson" readonly>
+              <input type="text" class="form-control" value="<?php echo $user['nameFull']; ?>" readonly>
             </div>
             <div class="col-md-6">
               <label class="form-label">Email</label>
-              <input type="email" class="form-control" value="maria.johnson@example.com" readonly>
+              <input type="email" class="form-control" value="<?php echo $user['email']; ?>" readonly>
             </div>
             <div class="col-md-6">
               <label class="form-label">Department</label>
-              <input type="text" class="form-control" value="Human Resources" readonly>
+              <input type="text" class="form-control" value="<?php echo $user['department']; ?>" readonly>
             </div>
             <div class="col-md-6">
               <label class="form-label">Role</label>
-              <input type="text" class="form-control" value="HR Coordinator" readonly>
+              <input type="text" class="form-control" value="<?php echo $user['role']; ?>" readonly>
             </div>
             <div class="col-md-6">
               <label class="form-label">Shift</label>
-              <input type="text" class="form-control" value="9:00 AM - 6:00 PM" readonly>
+              <input type="text" class="form-control" value="<?php echo $user['shift']; ?>" readonly>
             </div>
             <div class="col-md-6">
               <label class="form-label">Day Off</label>
-              <input type="text" class="form-control" value="Saturday-Sunday" readonly>
+              <input type="text" class="form-control" value="<?php echo $user['day_off']; ?>" readonly>
             </div>
           </div>
         </form>
       </div>
     </main>
   </div>
+  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 </body>
 </html>

@@ -19,7 +19,7 @@ header("Pragma: no-cache");
   <title>Face Recognition</title>
 
   <!-- Bootstrap & Fonts -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
   
@@ -133,5 +133,6 @@ header("Pragma: no-cache");
       </script>
     </main>
   </div>
+  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 </body>
 </html>

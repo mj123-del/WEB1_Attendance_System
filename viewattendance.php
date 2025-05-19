@@ -1,23 +1,69 @@
 <?php
-session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+session_start();
+$conn = new mysqli('localhost', 'root', '', 'attendee');
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 // ✅ Check login
 if (!isset($_SESSION['userName'])) {
     header("Location: index.php");
     exit();
+}
+$userName = $_SESSION['userName'];
+
+// ✅ Get the logged-in user's ID
+$stmt = $conn->prepare("SELECT user_id FROM users WHERE name = ?");
+$stmt->bind_param("s", $userName);
+$stmt->execute();
+$stmt->bind_result($userId);
+$stmt->fetch();
+$stmt->close();
+
+if (!$userId) {
+    die("User ID not found.");
+}
+
+// ✅ Query only current user's attendance logs
+$sql = "
+SELECT 
+    u.user_id,
+    u.department AS department,
+    u.status,
+    DATE(al.timestamp) AS date,
+    MAX(CASE WHEN al.action = 'in' THEN al.timestamp END) AS check_in,
+    MAX(CASE WHEN al.action = 'out' THEN al.timestamp END) AS check_out
+FROM users u
+JOIN attendance_log al ON u.user_id = al.userId
+WHERE u.user_id = ?
+GROUP BY u.user_id, DATE(al.timestamp)
+ORDER BY date DESC
+";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if (!$result) {
+    die("Query Error: " . $conn->error);
 }
 
 // 🚫 Prevent caching
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>View Attendance</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
   <script>
@@ -112,37 +158,35 @@ header("Pragma: no-cache");
             </tr>
           </thead>
           <tbody>
-            <!-- Example Row -->
-            <tr>
-              <td>EMP001</td>
-              <td>05-06-2025</td>
-              <td>IT</td>
-              <td>Present</td>
-              <td>08:15 AM</td>
-              <td>05:00 PM</td>
-            </tr>
-
-            <tr>
-                <td>EMP002</td>
-                <td>05-06-2025</td>
-                <td>HR</td>
-                <td>Present</td>
-                <td>08:15 AM</td>
-                <td>05:00 PM</td>
-            </tr>
-
-            <tr>
-                <td>EMP003</td>
-                <td>05-06-2025</td>
-                <td>Marketing</td>
-                <td>Present</td>
-                <td>10:00 AM</td>
-                <td>6:00 PM</td>
-              </tr>
+          <?php
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        // Format check-in and check-out times
+        $checkIn = isset($row['check_in']) && $row['check_in'] ? date("h:i A", strtotime($row['check_in'])) : 'N/A';
+        $checkOut = isset($row['check_out']) && $row['check_out'] ? date("h:i A", strtotime($row['check_out'])) : 'N/A';
+        
+        // Format the date
+        $formattedDate = isset($row['date']) && $row['date'] ? date("d-m-Y", strtotime($row['date'])) : 'N/A';
+        
+        echo "<tr>
+            <td>{$row['user_id']}</td>
+            <td>{$formattedDate}</td>
+            <td>{$row['department']}</td>
+            <td>{$row['status']}</td>
+            <td>{$checkIn}</td>
+            <td>{$checkOut}</td>
+        </tr>";
+    }
+} else {
+    echo "<tr><td colspan='6'>No attendance records found</td></tr>";
+}
+?>
           </tbody>
+          
         </table>
       </div>
     </main>
   </div>
+  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 </body>
 </html>

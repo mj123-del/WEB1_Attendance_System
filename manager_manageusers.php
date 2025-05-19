@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manage Users</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
@@ -165,7 +165,7 @@
                   <td><?= htmlspecialchars($row['department']) ?></td>
                   <td><?= htmlspecialchars($row['status']) ?></td>
                   <td>
-                    <a href="edit_user.php?id=<?= $row['user_id'] ?>" class="btn btn-action">Edit</a>
+                    <a href="manager_editUser.php?id=<?= $row['user_id'] ?>" class="btn btn-action">Edit</a>
                     <a href="delete_user.php?id=<?= $row['user_id'] ?>" class="btn btn-action" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
                   </td>
                 </tr>
@@ -181,5 +181,6 @@
       </div>
     </main>
   </div>
+  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 </body>
 </html>
