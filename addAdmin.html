@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Manager Profile</title>
-  <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
+  <title>Add/Edit User</title>
+  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
     /* Custom styles for the form container */
     .form-container {
       background-color: #d9d9d9; /* Light gray background for the form */
-      padding: 30px;
-      border-radius: 5px; /* Rounded corners */
-      max-width: 1000px;
+      padding: 10px;
+      border-radius: 10px; /* Rounded corners */
+      max-width: 700px;
       margin: 0 auto; /* Center the form */
     }
 
@@ -41,7 +41,18 @@
       width: calc(100% - 160px); /* Full width for larger inputs */
     }
 
-    
+    .btn-save {
+      border-radius: 20px; /* Rounded corners for the save button */
+      height: 50px; /* Button height */
+      width: 120px; /* Button width */
+      background-color: black; /* Black button */
+      color: white; /* White text */
+      border: none; /* No border */
+    }
+
+    .btn-save:hover {
+      background-color: #333; /* Slightly lighter black for hover */
+    }
   </style>
 </head>
 <body>
@@ -58,7 +69,7 @@
           <img src="img/home.png" alt="Home" class="me-2">
           <span>Home</span>
         </a>
-        <a href="manager_profile.html" class="nav-link d-flex align-items-center">
+        <a href="manager_manageusers.php" class="nav-link d-flex align-items-center">
           <!-- INSERT MANAGE USERS ICON HERE -->
           <img src="img/manageusers.png" alt="Manage Users" class="me-2">
           <span>Manage Users</span>
@@ -80,19 +91,45 @@
     <main class="flex-fill p-4">
       <!-- Header Section -->
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex align-items-center">
+        <div>
           <a href="manager_homedashboard.html">
             <img src="img/backbtn.png" alt="Back" style="width: 32px; height: 32px;">
           </a>
-          <h2 class="fw-bold ms-3">Face Recognition</h2>
+          <h2 class="fw-bold ms-3">Add/Edit User</h2>
         </div>
         <div class="d-flex align-items-center">
           <img src="img/profile2.png" alt="Profile" style="width: 60px; height: 60px;">
           <button class="btn btn-black ms-2">Logout</button>
         </div>
       </div>
+
+      <!-- Add/Edit User Form -->
+      <div class="form-container">
+        <form action="saveAdmin.php" method="POST">
+          
+          <div class="form-group">
+            <label for="email">Username</label>
+            <input type="text" id="email" name="username" class="full-width" required>
+          </div>
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input type="text" id="role" name="role" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="pass" name="passwrd" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Confirm Password</label>
+            <input type="password" id="conPass" name="conPass" required>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-save">Save</button>
+          </div>
+        </form>
+      </div>
     </main>
   </div>
-  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
+  <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
 </body>
 </html>

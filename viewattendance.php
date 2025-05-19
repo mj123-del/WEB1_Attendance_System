@@ -74,6 +74,29 @@ header("Pragma: no-cache");
         }
     });
     </script>
+    <script>
+    function searchTable() {
+      const input = document.getElementById("searchInput");
+      const filter = input.value.toLowerCase();
+      const table = document.querySelector("table");
+      const rows = table.getElementsByTagName("tr");
+
+      // this will loop through all the table rows, and hide those that don't match the search query
+      for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName("td");
+        let match = false;
+
+        for (let j = 0; j < cells.length; j++) {
+          if (cells[j].innerText.toLowerCase().includes(filter)) {
+            match = true;
+            break;
+          }
+        }
+
+        rows[i].style.display = match ? "" : "none";
+      }
+    }
+  </script>
 </head>
 <body>
   <div class="d-flex min-vh-100">
@@ -132,15 +155,9 @@ header("Pragma: no-cache");
 
       <!-- Filter and Export Section -->
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="input-group w-50">
-          <span class="input-group-text bg-white">
-            <img src="img/filter.png" alt="Filter" style="width: 24px; height: 24px;">
-          </span>
-          <input type="text" class="form-control" placeholder="Filter by ID, Date, Department...">
-        </div>
+        <input type="text" id="searchInput" class="form-control" onkeyup="searchTable()" placeholder="Search" style="width: 300px;">
         <div class="d-flex gap-2">
-          <button class="btn btn-black">Export CSV</button>
-          <button class="btn btn-black">Export PDF</button>
+          <a href="export_csv_user.php" class="btn btn-black">Export CSV</a>
         </div>
       </div>
   

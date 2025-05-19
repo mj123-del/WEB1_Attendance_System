@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['adminId']) || !isset($_SESSION['userName'])) {
+    header("Location: index.php");
+    exit();
+}
+
+
+// ✅ Prevent browser caching of this page
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,22 +30,18 @@
         <img src="img/logo.png" alt="Logo" class="logo mb-3">
       </div>
       <nav class="nav flex-column gap-3">
-        <a href="manager_homedashboard.html" class="nav-link d-flex align-items-center">
+        <a href="manager_homedashboard.php" class="nav-link d-flex align-items-center">
           <!-- INSERT HOME ICON HERE -->
           <img src="img/home.png" alt="Home">
           <span class="ms-2">Home</span>
         </a>
-        <a href="manager_manageusers.html" class="nav-link d-flex align-items-center">
+        <a href="manager_manageusers.php" class="nav-link d-flex align-items-center">
           <!-- INSERT MANAGE USERS ICON HERE -->
           <img src="img/manageusers.png" alt="Manage Users">
           <span class="ms-2">Manage Users</span>
         </a>
-        <a href="manager_reports.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT REPORTS ICON HERE -->
-          <img src="img/reports.png" alt="Reports">
-          <span class="ms-2">Reports</span>
-        </a>
-        <a href="manager_passwordreset.html" class="nav-link d-flex align-items-center">
+        
+        <a href="manager_passwordreset.php" class="nav-link d-flex align-items-center">
           <!-- INSERT RESET PASSWORD ICON HERE -->
           <img src="img/reset.png" alt="Reset Password">
           <span class="ms-2">Reset Password</span>
@@ -45,7 +54,7 @@
       <!-- Header Section -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <a href="manager_homedashboard.html">
+          <a href="manager_homedashboard.php">
             <img src="img/backbtn.png" alt="Back" style="width: 32px; height: 32px;">
           </a>
           <h2 class="fw-bold mt-3">Reports</h2>
@@ -53,7 +62,9 @@
         <div class="d-flex align-items-center">
           <!-- INSERT PROFILE ICON HERE -->
           <img src="img/profile2.png" alt="Profile" style="width: 60px; height: 60px;">
-          <button class="btn btn-black ms-2">Logout</button>
+          <form method="post" action="logout.php" style="display:inline;">
+            <button type="submit" class="btn btn-black ms-2">Logout</button>
+          </form>
         </div>
       </div>
 

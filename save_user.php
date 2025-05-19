@@ -44,7 +44,6 @@ $stmt->bind_param("sssssss", $fullName, $email, $role, $department, $shift, $day
 
 if ($stmt->execute()) {
     echo "<div style='color: green;'>✅ User added successfully.</div>";
-    header("Refresh: 2; URL=manager_manageusers.html"); // Redirect after 2 seconds
 } else {
     echo "<div style='color: red;'>❌ Error saving user: " . $stmt->error . "</div>";
 }

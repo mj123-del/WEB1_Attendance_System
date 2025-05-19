@@ -5,9 +5,6 @@ if (!isset($_SESSION['userId']) || !isset($_SESSION['userName'])) {
     exit();
 }
 
-echo "Session User ID: " . $_SESSION['userId'] . "<br>";
-echo "Session User Name: " . $_SESSION['userName'] . "<br>";
-
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 ?>
@@ -18,62 +15,17 @@ header("Pragma: no-cache");
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Scan QR Code</title>
 
-  
+ 
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
   <link rel="stylesheet" href="style.css"/>
-  <script src="html5-qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
 
-  <script>
-    window.addEventListener('pageshow', function (event) {
-        if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
-            window.location.reload();
-        }
-    });
-  </script>
-
-  <style>
-    .qr-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
-      width: 100%;
-      margin: auto;
-    }
-
-    #reader {
-      width: 100%;
-      max-width: 300px;
-      background-color: white;
-      padding: 20px;
-      border-radius: 15px;
-      border: 1px solid #ccc;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    #result {
-      margin-top: 20px;
-      font-size: 18px;
-      text-align: center;
-    }
-
-    .scanner-wrapper {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 70vh;
-    }
-  </style>
+  
 </head>
 <body>
   <div class="d-flex min-vh-100">
+    <!-- Sidebar -->
     <aside class="sidebar d-flex flex-column p-4">
       <div class="logo mb-5 text-center">
         <img src="img/logo.png" alt="Logo" class="logo mb-3">
@@ -87,6 +39,7 @@ header("Pragma: no-cache");
       </nav>
     </aside>
 
+    <!-- Main -->
     <main class="flex-fill p-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -101,6 +54,7 @@ header("Pragma: no-cache");
         </div>
       </div>
 
+      <!-- QR Scanner -->
       <div class="qr-container">
         <div id="reader"></div>
         <div id="result">Scan a QR code to see the result here.</div>
@@ -108,61 +62,72 @@ header("Pragma: no-cache");
     </main>
   </div>
 
+  <noscript>
+    <div class="alert alert-danger text-center mt-3">
+      JavaScript is required to scan QR codes. Please enable it in your browser.
+    </div>
+  </noscript>
+
+  <!-- QR Scanner Script -->
   <script>
-    const resultDiv = document.getElementById('result');
+    window.onload = function () {
+      const resultDiv = document.getElementById('result');
 
-    function onScanSuccess(decodedText) {
-      resultDiv.innerText = `Scanned: ${decodedText}`;
+      function onScanSuccess(decodedText) {
+        resultDiv.innerText = `Scanned: ${decodedText}`;
 
-      fetch('qr_handler.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `encoded_datetime=${encodeURIComponent(decodedText)}`
-      })
-      .then(response => response.text())
-      .then(data => {
-        resultDiv.innerHTML = data;
-        bindAttendanceForm();
-      })
-      .catch(error => {
-        console.error('Error verifying QR:', error);
-        resultDiv.innerHTML = `<div class="alert alert-danger">QR verification failed.</div>`;
-      });
-
-      html5QrcodeScanner.clear(); // stop scanner
-    }
-
-    const html5QrcodeScanner = new Html5QrcodeScanner(
-      "reader",
-      { fps: 10, qrbox: 300 },
-      false
-    );
-    html5QrcodeScanner.render(onScanSuccess);
-
-    function bindAttendanceForm() {
-      const form = document.getElementById('attendanceForm');
-      if (form) {
-        form.addEventListener('submit', function (e) {
-          e.preventDefault();
-
-          const formData = new FormData(form);
-
-          fetch('qr_handler.php', {
-            method: 'POST',
-            body: formData
-          })
-          .then(response => response.text())
-          .then(data => {
-            resultDiv.innerHTML = data;
-          })
-          .catch(error => {
-            console.error('Attendance error:', error);
-            resultDiv.innerHTML = `<div class="alert alert-danger">Something went wrong.</div>`;
-          });
+        fetch('qr_handler.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `encoded_datetime=${encodeURIComponent(decodedText)}`
+        })
+        .then(response => response.text())
+        .then(data => {
+          resultDiv.innerHTML = data;
+          bindAttendanceForm();
+        })
+        .catch(error => {
+          console.error('Error verifying QR:', error);
+          resultDiv.innerHTML = `<div class="alert alert-danger">QR verification failed.</div>`;
         });
+
+        html5QrcodeScanner.clear(); // Stop scanning
       }
-    }
+
+      const html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: 300 },
+        false
+      );
+      html5QrcodeScanner.render(onScanSuccess);
+
+      function bindAttendanceForm() {
+        const form = document.getElementById('attendanceForm');
+        if (form) {
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+
+            fetch('qr_handler.php', {
+              method: 'POST',
+              body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+              resultDiv.innerHTML = data;
+            })
+            .catch(error => {
+              console.error('Attendance error:', error);
+              resultDiv.innerHTML = `<div class="alert alert-danger">Something went wrong.</div>`;
+            });
+          });
+        }
+      }
+    };
   </script>
 
+  <!-- Bootstrap JS + Popper -->
+  <script src="bootstrap-5.3.3-dist/js/popper.min.js"></script>
+  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 </body>
 </html>

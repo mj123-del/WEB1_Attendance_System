@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['adminId']) || !isset($_SESSION['userName'])) {
+    header("Location: index.php");
+    exit();
+}
+
+
+// ✅ Prevent browser caching of this page
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,22 +103,18 @@
         <img src="img/logo.png" alt="Logo" class="logo mb-3">
       </div>
       <nav class="nav flex-column gap-4">
-        <a href="manager_homedashboard.html" class="nav-link d-flex align-items-center">
+        <a href="manager_homedashboard.php" class="nav-link d-flex align-items-center">
           <!-- INSERT HOME ICON HERE -->
           <img src="img/home.png" alt="Home" class="me-2">
           <span>Home</span>
         </a>
-        <a href="manager_manageusers.html" class="nav-link d-flex align-items-center active">
+        <a href="manager_manageusers.php" class="nav-link d-flex align-items-center active">
           <!-- INSERT MANAGE USERS ICON HERE -->
           <img src="img/manageusers.png" alt="Manage Users"> 
           <span class="ms-2">Manage Users</span>
         </a>
-        <a href="manager_reports.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT REPORTS ICON HERE -->
-          <img src="img/reports.png" alt="Reports" class="me-2">
-          <span>Reports</span>
-        </a>
-        <a href="manager_passwordreset.html" class="nav-link d-flex align-items-center">
+        
+        <a href="manager_passwordreset.php" class="nav-link d-flex align-items-center">
           <!-- INSERT RESET PASSWORD ICON HERE -->
           <img src="img/reset.png" alt="Reset Password" class="me-2">
           <span>Reset Password</span>
@@ -118,22 +127,27 @@
       <!-- Header Section -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <a href="manager_homedashboard.html">
+          <a href="manager_homedashboard.php">
             <img src="img/backbtn.png" alt="Back" style="width: 32px; height: 32px;">
           </a>
           <h2 class="fw-bold ms-3">Manage Users</h2>
         </div>
         <div class="d-flex align-items-center">
             <img src="img/profile2.png" alt="Profile" style="width: 60px; height: 60px;">
-            <button class="btn btn-black ms-2">Logout</button>
+            <form method="post" action="logout.php" style="display:inline;">
+            <button type="submit" class="btn btn-black ms-2">Logout</button>
+          </form>
 
         </div>
       </div>
 
       <!-- Add New User Button -->
-      <div class="text-end mb-3">
+       <a href="manager_addedit_user.php">
+        <div class="text-end mb-3">
         <button class="btn btn-add-user">Add New User</button>
       </div>
+       </a>
+      
 
       <!-- Users Table -->
       <div class="table-container">
@@ -166,7 +180,7 @@
                   <td><?= htmlspecialchars($row['status']) ?></td>
                   <td>
                     <a href="manager_editUser.php?id=<?= $row['user_id'] ?>" class="btn btn-action">Edit</a>
-                    <a href="delete_user.php?id=<?= $row['user_id'] ?>" class="btn btn-action" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                    <a href="javascript:void(0);" onclick="deleteUser(<?= $row['user_id'] ?>)" class="btn btn-action">Delete</a>
                   </td>
                 </tr>
               <?php
@@ -181,6 +195,24 @@
       </div>
     </main>
   </div>
+  <script>
+    function deleteUser(userId) {
+      if (confirm('Are you sure you want to delete this user?')) {
+        // Send an AJAX request to delete the user
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'delete_user.php?id=' + userId, true);
+        xhr.onload = function () {
+          if (xhr.status == 200) {
+            alert('User deleted successfully');
+            window.location.reload(); // Reload the page after deleting
+          } else {
+            alert('Error deleting user');
+          }
+        };
+        xhr.send();
+      }
+    }
+  </script>
   <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
 </body>
 </html>

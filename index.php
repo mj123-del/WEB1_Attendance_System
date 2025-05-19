@@ -22,6 +22,29 @@
       </form>
     </div>
   </div>
-  <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
+
+  <!-- Modal for login error -->
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-danger text-white">
+        <div class="modal-header">
+          <h5 class="modal-title" id="errorModalLabel">Login Error</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <?php if (isset($_GET['error'])) echo htmlspecialchars($_GET['error']); ?>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
+  
+  <?php if (isset($_GET['error'])): ?>
+  <script>
+    var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+    errorModal.show();
+  </script>
+  <?php endif; ?>
 </body>
 </html>

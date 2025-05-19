@@ -1,10 +1,23 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['adminId']) || !isset($_SESSION['userName'])) {
+    header("Location: index.php");
+    exit();
+}
+
+
+// ✅ Prevent browser caching of this page
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manager Profile</title>
-  <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
+<link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
@@ -53,22 +66,18 @@
         <img src="img/logo.png" alt="Logo" class="logo mb-3">
       </div>
       <nav class="nav flex-column gap-4">
-        <a href="manager_homedashboard.html" class="nav-link d-flex align-items-center">
+        <a href="manager_homedashboard.php" class="nav-link d-flex align-items-center">
           <!-- INSERT HOME ICON HERE -->
           <img src="img/home.png" alt="Home" class="me-2">
           <span>Home</span>
         </a>
-        <a href="manager_profile.html" class="nav-link d-flex align-items-center">
+        <a href="manager_profile.php" class="nav-link d-flex align-items-center">
           <!-- INSERT MANAGE USERS ICON HERE -->
           <img src="img/manageusers.png" alt="Manage Users" class="me-2">
           <span>Manage Users</span>
         </a>
-        <a href="manager_reports.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT REPORTS ICON HERE -->
-          <img src="img/reports.png" alt="Reports" class="me-2">
-          <span>Reports</span>
-        </a>
-        <a href="manager_passwordreset.html" class="nav-link d-flex align-items-center">
+        
+        <a href="manager_passwordreset.php" class="nav-link d-flex align-items-center">
           <!-- INSERT RESET PASSWORD ICON HERE -->
           <img src="img/reset.png" alt="Reset Password" class="me-2">
           <span>Reset Password</span>
@@ -81,15 +90,51 @@
       <!-- Header Section -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
-          <a href="manager_homedashboard.html">
+          <a href="manager_homedashboard.php">
             <img src="img/backbtn.png" alt="Back" style="width: 32px; height: 32px;">
           </a>
-          <h2 class="fw-bold ms-3">Scan QR Code</h2>
+          <h2 class="fw-bold ms-3">Profile</h2>
         </div>
         <div class="d-flex align-items-center">
           <img src="img/profile2.png" alt="Profile" style="width: 60px; height: 60px;">
-          <button class="btn btn-black ms-2">Logout</button>
+          <form method="post" action="logout.php" style="display:inline;">
+            <button type="submit" class="btn btn-black ms-2">Logout</button>
+          </form>
         </div>
+      </div>
+
+      <!-- Add/Edit User Form -->
+      <div class="form-container">
+        <form action="save_user.php" method="POST">
+          <div class="form-group">
+            <label for="employee_id">Employee ID</label>
+            <input type="text" id="employee_id" name="employee_id" required>
+          </div>
+          <div class="form-group">
+            <label for="full_name">Full Name</label>
+            <input type="text" id="full_name" name="full_name" class="full-width" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" class="full-width" required>
+          </div>
+          <div class="form-group">
+            <label for="department">Department</label>
+            <input type="text" id="department" name="department" required>
+          </div>
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input type="text" id="role" name="role" required>
+          </div>
+          <div class="form-group">
+            <label for="shift">Shift</label>
+            <input type="text" id="shift" name="shift" required>
+          </div>
+          <div class="form-group">
+            <label for="day_off">Day Off</label>
+            <input type="text" id="day_off" name="day_off" required>
+          </div>
+        </form>
       </div>
     </main>
   </div>

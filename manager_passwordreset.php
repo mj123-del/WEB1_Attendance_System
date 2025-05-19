@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['adminId']) || !isset($_SESSION['userName'])) {
+    header("Location: index.php");
+    exit();
+}
+
+
+// ✅ Prevent browser caching of this page
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,27 +53,18 @@
     <!-- Sidebar -->
     <aside class="sidebar d-flex flex-column p-4">
       <div class="logo mb-5 text-center">
-        <!-- INSERT LOGO IMAGE HERE -->
         <img src="img/logo.png" alt="Logo" class="logo mb-3">
       </div>
       <nav class="nav flex-column gap-4">
-        <a href="manager_homedashboard.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT HOME ICON HERE -->
+        <a href="manager_homedashboard.php" class="nav-link d-flex align-items-center">
           <img src="img/home.png" alt="Home" class="me-2">
           <span>Home</span>
         </a>
-        <a href="manager_manageusers.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT MANAGE USERS ICON HERE -->
+        <a href="manager_manageusers.php" class="nav-link d-flex align-items-center">
           <img src="img/manageusers.png" alt="Manage Users" class="me-2">
           <span>Manage Users</span>
         </a>
-        <a href="manager_reports.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT REPORTS ICON HERE -->
-          <img src="img/reports.png" alt="Reports" class="me-2">
-          <span>Reports</span>
-        </a>
-        <a href="manager_passwordreset.html" class="nav-link d-flex align-items-center active">
-          <!-- INSERT RESET PASSWORD ICON HERE -->
+        <a href="manager_passwordreset.php" class="nav-link d-flex align-items-center">
           <img src="img/reset.png" alt="Reset Password" class="me-2">
           <span>Reset Password</span>
         </a>
@@ -72,7 +76,7 @@
       <!-- Header Section -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <a href="manager_homedashboard.html">
+          <a href="manager_homedashboard.php">
             <img src="img/backbtn.png" alt="Back" style="width: 32px; height: 32px;">
           </a>
           <h2 class="fw-bold ms-3">Password Reset</h2>
@@ -80,7 +84,9 @@
         <div class="d-flex align-items-center">
           <!-- INSERT PROFILE ICON HERE -->
           <img src="img/profile2.png" alt="Profile" style="width: 60px; height: 60px;">
-          <button class="btn btn-black ms-2">Logout</button>
+          <form method="post" action="logout.php" style="display:inline;">
+            <button type="submit" class="btn btn-black ms-2">Logout</button>
+          </form>
         </div>
       </div>
 

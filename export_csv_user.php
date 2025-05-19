@@ -8,7 +8,10 @@ if (!isset($_SESSION['userName'])) {
     exit();
 }
 
-// ✅ Query attendance logs (same as your main page)
+// ✅ Get the current user's ID from session
+$userId = $_SESSION['userId']; // Assuming userId is stored in session after login
+
+// ✅ Query attendance logs for the logged-in user only
 $sql = "
 SELECT 
     u.user_id,
@@ -20,13 +23,20 @@ SELECT
     MAX(CASE WHEN al.action = 'out' THEN al.timestamp END) AS check_out
 FROM users u
 JOIN attendance_log al ON u.user_id = al.userId
+WHERE u.user_id = ?  -- Filter by logged-in user
 GROUP BY u.user_id, u.name, u.department, u.status, DATE(al.timestamp)
 ORDER BY date DESC
 ";
 
-$result = $conn->query($sql);
+// Prepare the statement to prevent SQL injection
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userId); // Bind the user_id to the query
+$stmt->execute();
 
-// ✅ Send headers
+// Get the result
+$result = $stmt->get_result();
+
+// ✅ Send headers for CSV download
 header('Content-Type: text/csv; charset=utf-8');
 header('Content-Disposition: attachment; filename=attendance_logs.csv');
 

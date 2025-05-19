@@ -1,3 +1,48 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_start();
+$conn = new mysqli('localhost', 'root', '', 'attendee');
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+// ✅ Check login
+if (!isset($_SESSION['userName'])) {
+    header("Location: index.php");
+    exit();
+}
+$userName = $_SESSION['userName'];
+
+
+
+// ✅ Query only current user's attendance logs
+$sql = "
+SELECT 
+    u.user_id,
+    u.name AS full_name,
+    u.department,
+    u.status,
+    DATE(al.timestamp) AS date,
+    MAX(CASE WHEN al.action = 'in' THEN al.timestamp END) AS check_in,
+    MAX(CASE WHEN al.action = 'out' THEN al.timestamp END) AS check_out
+FROM users u
+JOIN attendance_log al ON u.user_id = al.userId
+GROUP BY u.user_id, u.name, u.department, u.status, DATE(al.timestamp)
+ORDER BY date DESC
+";
+
+$result = $conn->query($sql);
+if (!$result) {
+    die("Query Error: " . $conn->error);
+}
+
+
+// 🚫 Prevent caching
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,29 +81,20 @@
     <!-- Sidebar -->
     <aside class="sidebar d-flex flex-column p-4">
       <div class="logo mb-5 text-center">
-        <!-- INSERT LOGO IMAGE HERE -->
         <img src="img/logo.png" alt="Logo" class="logo mb-3">
       </div>
-      <nav class="nav flex-column gap-3">
-        <a href="manager_homedashboard.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT HOME ICON HERE -->
-          <img src="img/home.png" alt="Home">
-          <span class="ms-2">Home</span>
+      <nav class="nav flex-column gap-4">
+        <a href="manager_homedashboard.php" class="nav-link d-flex align-items-center">
+          <img src="img/home.png" alt="Home" class="me-2">
+          <span>Home</span>
         </a>
-        <a href="manager_manageusers.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT MANAGE USERS ICON HERE -->
-          <img src="img/manageusers.png"Manage Users">
-          <span class="ms-2">Manage Users</span>
+        <a href="manager_manageusers.php" class="nav-link d-flex align-items-center">
+          <img src="img/manageusers.png" alt="Manage Users" class="me-2">
+          <span>Manage Users</span>
         </a>
-        <a href="manager_reports.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT REPORTS ICON HERE -->
-          <img src="img/reports.png" alt="Reports">
-          <span class="ms-2">Reports</span>
-        </a>
-        <a href="manager_passwordreset.html" class="nav-link d-flex align-items-center">
-          <!-- INSERT RESET PASSWORD ICON HERE -->
-          <img src="img/reset.png" alt="Reset Password">
-          <span class="ms-2">Reset Password</span>
+        <a href="manager_passwordreset.php" class="nav-link d-flex align-items-center">
+          <img src="img/reset.png" alt="Reset Password" class="me-2">
+          <span>Reset Password</span>
         </a>
       </nav>
     </aside>
@@ -67,7 +103,7 @@
     <main class="flex-fill p-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <a href="manager_homedashboard.html">
+          <a href="manager_homedashboard.php">
             <img src="img/backbtn.png" alt="Back" style="width: 32px; height: 32px;">
           </a>
           <h2 class="fw-bold mt-3">Attendance Logs</h2> 
@@ -75,7 +111,9 @@
         <div class="d-flex align-items-center">
           <!-- INSERT PROFILE ICON HERE -->
           <img src="img/profile2.png" alt="Profile" style="width: 60px; height: 60px;">
-          <button class="btn btn-black ms-2">Logout</button>
+          <form method="post" action="logout.php" style="display:inline;">
+            <button type="submit" class="btn btn-black ms-2">Logout</button>
+          </form>
         </div>
       </div>
 
@@ -84,7 +122,6 @@
         <input type="text" id="searchInput" class="form-control" onkeyup="searchTable()" placeholder="Search" style="width: 300px;">
         <div class="d-flex gap-2">
           <a href="export_csv.php" class="btn btn-black">Export CSV</a>
-          <a href="export_pdf.php" class="btn btn-black">Export PDF</a>
         </div>
       </div>
           
@@ -98,35 +135,31 @@
               <th>Check-In Time</th>
               <th>Check-Out Time</th>
               <th>Status</th>
-              <th>Method (Face Recognition/QR Code)</th> 
+              <
             </tr>
           </thead>
           <tbody>
-            <!-- Example Rows -->
-            <tr>
-              <td>EMP001</td>
-              <td>05-06-2025</td>
-              <td>08:15 AM</td>
-              <td>05:00 PM</td>
-              <td>Present</td>
-              <td>Face Recognition</td> <!-- Example Method -->
-            </tr>
-            <tr>
-              <td>EMP002</td>
-              <td>05-06-2025</td>
-              <td>08:15 AM</td>
-              <td>05:00 PM</td>
-              <td>Present</td>
-              <td>QR Code</td> <!-- Example Method -->
-            </tr>
-            <tr>
-              <td>EMP003</td>
-              <td>05-06-2025</td>
-              <td>10:00 AM</td>
-              <td>06:00 PM</td>
-              <td>Present</td>
-              <td>Face Recognition</td> <!-- Example Method -->
-            </tr>
+            <?php
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+    $checkIn = $row['check_in'] ? date("h:i A", strtotime($row['check_in'])) : 'N/A';
+    $checkOut = $row['check_out'] ? date("h:i A", strtotime($row['check_out'])) : 'N/A';
+    $formattedDate = $row['date'] ? date("d-m-Y", strtotime($row['date'])) : 'N/A';
+
+    echo "<tr>
+        <td>{$row['user_id']}</td>
+        <td>{$formattedDate}</td>
+        <td>{$checkIn}</td>
+        <td>{$checkOut}</td>
+        <td>{$row['status']}</td>
+        
+        
+    </tr>";
+  }
+} else {
+    echo "<tr><td colspan='6'>No attendance records found</td></tr>";
+}
+?>
           </tbody>
         </table>
       </div>

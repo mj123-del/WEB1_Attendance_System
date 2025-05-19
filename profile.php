@@ -12,7 +12,7 @@ if (!isset($_SESSION['userName'])) {
 $userName = $_SESSION['userName'];
 
 // Query to get the user's profile data from the 'name' column (username)
-$sql = "SELECT user_id, nameFull, role, department, shift, day_off 
+$sql = "SELECT user_id, nameFull, name, role, department, shift, day_off 
         FROM users 
         WHERE name = '$userName'";  // 'name' is used here to match the column in your table
 
@@ -109,7 +109,7 @@ if ($result && $result->num_rows > 0) {
             </div>
             <div class="col-md-6">
               <label class="form-label">Email</label>
-              <input type="email" class="form-control" value="<?php echo $user['email']; ?>" readonly>
+              <input type="email" class="form-control" value="<?php echo $user['name']; ?>" readonly>
             </div>
             <div class="col-md-6">
               <label class="form-label">Department</label>

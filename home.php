@@ -93,14 +93,7 @@ window.addEventListener('pageshow', function (event) {
   <div class="row g-4 justify-content-center function-container">
     
     <!-- Face Recognition -->
-    <div class="col-md-6 col-lg-5">
-      <a href="facerecog.php" class="text-decoration-none">
-        <div class="function-box text-center p-4">
-          <img src="img/facerecog.png" alt="Use Face Recognition">
-          <p class="mt-3">Use Face Recognition</p>
-        </div>
-      </a>
-    </div>
+   
 
     <!-- Scan QR Code -->
     <div class="col-md-6 col-lg-5">

@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['adminId']) || !isset($_SESSION['userName'])) {
+    header("Location: index.php");
+    exit();
+}
+
+
+// ✅ Prevent browser caching of this page
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,19 +65,16 @@
         <img src="img/logo.png" alt="Logo" class="logo mb-3">
       </div>
       <nav class="nav flex-column gap-4">
-        <a href="manager_homedashboard.html" class="nav-link d-flex align-items-center">
+        <a href="manager_homedashboard.php" class="nav-link d-flex align-items-center">
           <img src="img/home.png" alt="Home" class="me-2">
           <span>Home</span>
         </a>
-        <a href="manager_manageusers.html" class="nav-link d-flex align-items-center">
+        <a href="manager_manageusers.php" class="nav-link d-flex align-items-center">
           <img src="img/manageusers.png" alt="Manage Users" class="me-2">
           <span>Manage Users</span>
         </a>
-        <a href="manager_reports.html" class="nav-link d-flex align-items-center">
-          <img src="img/reports.png" alt="Reports" class="me-2">
-          <span>Reports</span>
-        </a>
-        <a href="manager_passwordreset.html" class="nav-link d-flex align-items-center">
+        
+        <a href="manager_passwordreset.php" class="nav-link d-flex align-items-center">
           <img src="img/reset.png" alt="Reset Password" class="me-2">
           <span>Reset Password</span>
         </a>
@@ -78,31 +88,15 @@
         <h2 class="fw-bold">Home</h2>
         <div class="d-flex align-items-center">
           <img src="img/profile2.png" alt="Profile" style="width: 60px; height: 60px;">
-          <button class="btn btn-black ms-2">Logout</button>
+          <form method="post" action="logout.php" style="display:inline;">
+            <button type="submit" class="btn btn-black ms-2">Logout</button>
+          </form>
         </div>
       </div>
 
       <!-- Buttons Section -->
-      <div class="container d-flex justify-content-center">
-        <div class="row g-3 justify-content-center">
           <div class="col-md-5 col-lg-5 mb-3">
-            <a href="manager_face_recognition.html" class="text-decoration-none">
-              <div class="card text-white bg-black text-center p-4">
-                <img src="img/facerecog.png" alt="Use Face Recognition">
-                <div><h5 class="card-title">Use Face Recognition</h5></div>
-              </div>
-            </a>
-          </div>
-          <div class="col-md-5 col-lg-5 mb-3">
-            <a href="manager_scan_qr.html" class="text-decoration-none">
-              <div class="card text-white bg-black text-center p-4">
-                <img src="img/qr.png" alt="Scan QR Code">
-                <div><h5 class="card-title">Scan QR Code</h5></div>
-              </div>
-            </a>
-          </div>
-          <div class="col-md-5 col-lg-5 mb-3">
-            <a href="manager_attendancelogs.html" class="text-decoration-none">
+            <a href="manager_attendancelogs.php" class="text-decoration-none">
               <div class="card text-white bg-black text-center p-4">
                 <img src="img/viewlogs.png" alt="View Attendance Logs">
                 <div><h5 class="card-title">View Attendance Logs</h5></div>
@@ -110,12 +104,7 @@
             </a>
           </div>
           <div class="col-md-5 col-lg-5 mb-3">
-            <a href="manager_profile.html" class="text-decoration-none">
-              <div class="card text-white bg-black text-center p-4">
-                <img src="img/profile.png" alt="Profile">
-                <div><h5 class="card-title">Profile</h5></div>
-              </div>
-            </a>
+            
           </div>
         </div>
       </div>
